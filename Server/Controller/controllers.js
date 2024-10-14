@@ -14,13 +14,18 @@ module.exports.userSignUp = (req, res, next) => {
 module.exports.userLogin = (req, res, next) => {
   User.findOne({ where: { email: req.body.email } })
     .then((result) => {
-      if (result.password === req.body.password) {
-        res.send("Login Successful");
+      if (result) {
+        if (result.password === req.body.password) {
+          res.send("Login Successful");
+        } else {
+          res.send("Password is wrong, Please Enter the Right Password");
+        }
       } else {
-        res.send("Password is wrong, Please Enter the Right Password");
+        res.send("Account not found, please create an account");
       }
     })
     .catch((err) => {
-      res.send("Account is Not Found, Please Create the account");
+      console.error(err);
+      res.status(404).send("An error occurred during login");
     });
 };
